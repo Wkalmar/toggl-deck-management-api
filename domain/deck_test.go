@@ -68,13 +68,13 @@ var CreateUnshuffledDeckData = []CreateDeckDataItem{
 
 func TestCreateDeck_Unshuffled(t *testing.T) {
 	unshuffledDeck := CreateDeck(false)
-	if unshuffledDeck.shuffled {
+	if unshuffledDeck.Shuffled {
 		t.Log("Property shuffled of unshuffled deck expected to be false")
 		t.Fail()
 	}
 	for _, item := range CreateUnshuffledDeckData {
-		card := unshuffledDeck.cards[item.index]
-		if card.suite != item.shape || card.value != item.rank {
+		card := unshuffledDeck.Cards[item.index]
+		if card.Suite != item.shape || card.Value != item.rank {
 			t.Log("First card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
 			t.Fail()
 		}
@@ -83,12 +83,12 @@ func TestCreateDeck_Unshuffled(t *testing.T) {
 
 func TestCreateDeck_Shuffled(t *testing.T) {
 	shuffledDeck := CreateDeck(true)
-	if !shuffledDeck.shuffled {
+	if !shuffledDeck.Shuffled {
 		t.Log("Property shuffled of shuffled deck expected to be true")
 		t.Fail()
 	}
 	cardCount := make(map[Card]int)
-	for _, card := range shuffledDeck.cards {
+	for _, card := range shuffledDeck.Cards {
 		value, exists := cardCount[card]
 		if exists {
 			value++
@@ -113,14 +113,14 @@ func TestCreateDeck_Shuffled(t *testing.T) {
 
 func TestCreateDeck_Shuffled_ThenUnshuffled(t *testing.T) {
 	shuffledDeck := CreateDeck(true)
-	if !shuffledDeck.shuffled {
+	if !shuffledDeck.Shuffled {
 		t.Log("Property shuffled of shuffled deck expected to be true")
 		t.Fail()
 	}
 	unshuffledDeck := CreateDeck(false)
 	for _, item := range CreateUnshuffledDeckData {
-		card := unshuffledDeck.cards[item.index]
-		if card.suite != item.shape || card.value != item.rank {
+		card := unshuffledDeck.Cards[item.index]
+		if card.Suite != item.shape || card.Value != item.rank {
 			t.Log("Card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
 			t.Fail()
 		}
@@ -134,7 +134,7 @@ func TestCreateDeck_ExactCardsArePassed_Unshuffled(t *testing.T) {
 	cards := []Card{jackOfDiamonds, aceOfSpades, queenOfHearts}
 	deck := CreateDeck(false, cards...)
 	for i, inputCard := range cards {
-		card := deck.cards[i]
+		card := deck.Cards[i]
 		if card != inputCard {
 			t.Log("Card expected to be " + GetCardStringCode(inputCard) + " but was " + GetCardStringCode(card))
 			t.Fail()
@@ -149,7 +149,7 @@ func TestCreateDeck_ExactCardsArePassed_Shuffled(t *testing.T) {
 	cards := []Card{jackOfDiamonds, aceOfSpades, queenOfHearts}
 	deck := CreateDeck(false, cards...)
 	deckCardsCount := make(map[Card]int)
-	for _, resCard := range deck.cards {
+	for _, resCard := range deck.Cards {
 		value, exists := deckCardsCount[resCard]
 		if exists {
 			value++

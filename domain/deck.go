@@ -9,15 +9,15 @@ import (
 )
 
 type Deck struct {
-	deck_id  uuid.UUID
-	shuffled bool
-	cards    []Card
+	DeckId   uuid.UUID
+	Shuffled bool
+	Cards    []Card
 }
 
 var unshuffledCards []Card
 
 func countRemainingCards(d Deck) uint8 {
-	return uint8(len(d.cards))
+	return uint8(len(d.Cards))
 }
 
 func generateUnshuffledCards() []Card {
@@ -51,9 +51,9 @@ func CreateDeck(shuffled bool, cards ...Card) Deck {
 	}
 
 	return Deck{
-		deck_id:  uuid.New(),
-		shuffled: shuffled,
-		cards:    cards,
+		DeckId:   uuid.New(),
+		Shuffled: shuffled,
+		Cards:    cards,
 	}
 }
 
@@ -61,7 +61,7 @@ func DrawCards(deck *Deck, count uint8) ([]Card, error) {
 	if count > countRemainingCards(*deck) {
 		return nil, errors.New("DrawCards: Insuffucient amount of cards in deck")
 	}
-	result := deck.cards[:count]
-	deck.cards = deck.cards[count:]
+	result := deck.Cards[:count]
+	deck.Cards = deck.Cards[count:]
 	return result, nil
 }
