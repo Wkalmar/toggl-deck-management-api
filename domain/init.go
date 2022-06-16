@@ -21,4 +21,23 @@ func init() {
 	rankToLetterMap[Jack] = "J"
 	rankToLetterMap[Queen] = "Q"
 	rankToLetterMap[King] = "K"
+	letterToShapeMap = make(map[string]Shape)
+	letterToShapeMap["S"] = Spades
+	letterToShapeMap["C"] = Clubs
+	letterToShapeMap["D"] = Diamonds
+	letterToShapeMap["H"] = Hearts
+	letterToRankMap = make(map[string]Rank)
+	letterToRankMap["A"] = Ace
+	letterToRankMap["2"] = Two
+	letterToRankMap["3"] = Three
+	letterToRankMap["4"] = Four
+	letterToRankMap["5"] = Five
+	letterToRankMap["6"] = Six
+	letterToRankMap["7"] = Seven
+	letterToRankMap["8"] = Eight
+	letterToRankMap["9"] = Nine
+	letterToRankMap["10"] = Ten
+	letterToRankMap["J"] = Jack
+	letterToRankMap["Q"] = Queen
+	letterToRankMap["K"] = King
 }

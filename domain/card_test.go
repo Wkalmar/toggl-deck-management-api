@@ -73,3 +73,34 @@ func TestGetCardStringCode(t *testing.T) {
 		}
 	}
 }
+
+type TestParseCardStringCodeDataItem struct {
+	code    string
+	isError bool
+	card    Card
+}
+
+var TestParseCardStringCodeData = []TestParseCardStringCodeDataItem{
+	{"13F", true, Card{}},
+	{"9F", true, Card{}},
+	{"13S", true, Card{}},
+	{"8C", false, CreateCard(Eight, Clubs)},
+	{"10S", false, CreateCard(Ten, Spades)},
+}
+
+func TestParseCardStringCode(t *testing.T) {
+	for _, data := range TestParseCardStringCodeData {
+		actual, err := ParseCardStringCode(data.code)
+		if data.isError && err == nil {
+			t.Log("Expected to fail for " + data.code)
+			t.Fail()
+		} else if !data.isError && err != nil {
+			t.Log("Expected to succeed for " + data.code)
+			t.Fail()
+		}
+		if actual != data.card {
+			t.Log("Expected " + GetCardStringCode(data.card) + " but was " + GetCardStringCode(actual))
+			t.Fail()
+		}
+	}
+}

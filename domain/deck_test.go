@@ -121,7 +121,51 @@ func TestCreateDeck_Shuffled_ThenUnshuffled(t *testing.T) {
 	for _, item := range CreateUnshuffledDeckData {
 		card := unshuffledDeck.cards[item.index]
 		if card.suite != item.shape || card.value != item.rank {
-			t.Log("First card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
+			t.Log("Card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
+			t.Fail()
+		}
+	}
+}
+
+func TestCreateDeck_ExactCardsArePassed_Unshuffled(t *testing.T) {
+	jackOfDiamonds := CreateCard(Jack, Diamonds)
+	aceOfSpades := CreateCard(Ace, Spades)
+	queenOfHearts := CreateCard(Queen, Hearts)
+	cards := []Card{jackOfDiamonds, aceOfSpades, queenOfHearts}
+	deck := CreateDeck(false, cards...)
+	for i, inputCard := range cards {
+		card := deck.cards[i]
+		if card != inputCard {
+			t.Log("Card expected to be " + GetCardStringCode(inputCard) + " but was " + GetCardStringCode(card))
+			t.Fail()
+		}
+	}
+}
+
+func TestCreateDeck_ExactCardsArePassed_Shuffled(t *testing.T) {
+	jackOfDiamonds := CreateCard(Jack, Diamonds)
+	aceOfSpades := CreateCard(Ace, Spades)
+	queenOfHearts := CreateCard(Queen, Hearts)
+	cards := []Card{jackOfDiamonds, aceOfSpades, queenOfHearts}
+	deck := CreateDeck(false, cards...)
+	deckCardsCount := make(map[Card]int)
+	for _, resCard := range deck.cards {
+		value, exists := deckCardsCount[resCard]
+		if exists {
+			value++
+			deckCardsCount[resCard] = value
+		} else {
+			deckCardsCount[resCard] = 1
+		}
+	}
+	for _, inputCard := range cards {
+		value, found := deckCardsCount[inputCard]
+		if !found {
+			t.Log("Expected all cards to be present")
+			t.Fail()
+		}
+		if value != 1 {
+			t.Log("Expected cards not to be duplicate")
 			t.Fail()
 		}
 	}

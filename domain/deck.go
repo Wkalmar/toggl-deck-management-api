@@ -36,12 +36,20 @@ func shuffleCards(cards []Card) {
 	rand.Shuffle(len(cards), func(i, j int) { cards[i], cards[j] = cards[j], cards[i] })
 }
 
-func CreateDeck(shuffled bool) Deck {
+func initCards() []Card {
 	cards := make([]Card, len(unshuffledCards))
 	copy(cards, unshuffledCards)
+	return cards
+}
+
+func CreateDeck(shuffled bool, cards ...Card) Deck {
+	if len(cards) == 0 {
+		cards = initCards()
+	}
 	if shuffled {
 		shuffleCards(cards)
 	}
+
 	return Deck{
 		deck_id:  uuid.New(),
 		shuffled: shuffled,
