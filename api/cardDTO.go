@@ -10,8 +10,8 @@ type CardDTO struct {
 
 func CreateCardDTO(card domain.Card) CardDTO {
 	return CardDTO{
-		Rank:  "",
-		Shape: "",
+		Rank:  domain.GetRankFullname(card.Value),
+		Shape: domain.GetShapeFullname(card.Suite),
 		Code:  domain.GetCardStringCode(card),
 	}
 }

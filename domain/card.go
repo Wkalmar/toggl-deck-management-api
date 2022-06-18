@@ -7,9 +7,14 @@ type Card struct {
 	Suite Shape
 }
 
-var shapeToLetterMap map[Shape]string
+type StringRepresentation struct {
+	code     string
+	fullname string
+}
+
+var shapeToStringRepresentationMap map[Shape]StringRepresentation
 var letterToShapeMap map[string]Shape
-var rankToLetterMap map[Rank]string
+var rankToStringRepresentationMap map[Rank]StringRepresentation
 var letterToRankMap map[string]Rank
 
 func CreateCard(value Rank, suite Shape) Card {
@@ -20,7 +25,7 @@ func CreateCard(value Rank, suite Shape) Card {
 }
 
 func GetCardStringCode(card Card) string {
-	return rankToLetterMap[card.Value] + shapeToLetterMap[card.Suite]
+	return rankToStringRepresentationMap[card.Value].code + shapeToStringRepresentationMap[card.Suite].code
 }
 
 func ParseCardStringCode(code string) (Card, error) {
@@ -35,4 +40,12 @@ func ParseCardStringCode(code string) (Card, error) {
 		return Card{}, errors.New("ParseCardStringCode. Invalid card code")
 	}
 	return CreateCard(rank, shape), nil
+}
+
+func GetShapeFullname(shape Shape) string {
+	return shapeToStringRepresentationMap[shape].fullname
+}
+
+func GetRankFullname(rank Rank) string {
+	return rankToStringRepresentationMap[rank].fullname
 }
