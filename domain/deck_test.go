@@ -182,7 +182,7 @@ func TestDrawCards_SufficientAmount(t *testing.T) {
 		t.Log("Expected to return 2 items but was " + strconv.Itoa((len(items))))
 		t.Fail()
 	}
-	reamining := countRemainingCards(deck)
+	reamining := countRemainingCardsCore(deck)
 	if reamining != 50 {
 		t.Log("Excpected 50 items to remain but was " + strconv.Itoa(int(reamining)))
 		t.Fail()
@@ -200,7 +200,7 @@ func TestDrawCards_SufficientAmount_NoItemsRemain(t *testing.T) {
 		t.Log("Expected to return 2 items but was " + strconv.Itoa((len(items))))
 		t.Fail()
 	}
-	reamining := countRemainingCards(deck)
+	reamining := countRemainingCardsCore(deck)
 	if reamining != 0 {
 		t.Log("Excpected 50 items to remain but was " + strconv.Itoa(int(reamining)))
 		t.Fail()
