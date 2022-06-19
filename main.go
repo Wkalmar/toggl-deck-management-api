@@ -2,102 +2,34 @@ package main
 
 import (
 	"toggl-deck-management-api/api"
-	"toggl-deck-management-api/domain"
-	"toggl-deck-management-api/storage"
+	_ "toggl-deck-management-api/docs"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-type CreateDeckArgs struct {
-	Shuffled bool     `form:"shuffled"`
-	Cards    []string `form:"cards"`
-}
+// @title Deck Management API
+// @version 0.1
+// @description This is a sample server server.
+// @termsOfService http://swagger.io/terms/
 
-type OpenDeckArgs struct {
-	DeckId string `form:"deck_id"`
-}
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
 
-type DrawCardsArgs struct {
-	DeckId string `form:"deck_id"`
-	Count  uint8  `form:"count"`
-}
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
+// @host localhost:8080
+// @BasePath /
+// @schemes http
 func main() {
 	r := gin.Default()
-	r.POST("/create-deck", func(c *gin.Context) {
-		var args CreateDeckArgs
-		if c.ShouldBind(&args) == nil {
-			var domainCards []domain.Card
-			for _, card := range args.Cards {
-				domainCard, err := domain.ParseCardStringCode(card)
-				if err == nil {
-					domainCards = append(domainCards, domainCard)
-				} else {
-					c.String(400, "Invalid request. Invalid card code "+card)
-					return
-				}
-			}
-			deck := domain.CreateDeck(args.Shuffled, domainCards...)
-			storage.Add(deck)
-			dto := api.CreateClosedDeckDTO(deck)
-			c.JSON(200, dto)
-			return
-		} else {
-			c.String(400, "Ivalid request. Expecting query of type ?shuffled=<bool>&cards=<card1>,<card2>,...<cardn>")
-			return
-		}
-	})
-	r.GET("/open-deck", func(c *gin.Context) {
-		var args OpenDeckArgs
-		if c.ShouldBind(&args) == nil {
-			deckId, err := uuid.Parse(args.DeckId)
-			if err != nil {
-				c.String(400, "Bad Request. Expecing request in format ?deck_id=<uuid>")
-				return
-			}
-			deck, found := storage.Get(deckId)
-			if !found {
-				c.String(400, "Bad Request. Deck with given id not found")
-				return
-			}
-			dto := api.CreateOpenDeckDTO(deck)
-			c.JSON(200, dto)
-			return
-		} else {
-			c.String(400, "Bad Request. Expecing request in format ?deck_id=<uuid>")
-			return
-		}
-	})
-	r.PUT("/draw-cards", func(c *gin.Context) {
-		var args DrawCardsArgs
-		if c.ShouldBind(&args) == nil {
-			deckId, err := uuid.Parse(args.DeckId)
-			if err != nil {
-				c.String(400, "Bad Request. Expecing request in format ?deck_id=<uuid>")
-				return
-			}
-			deck, found := storage.Get(deckId)
-			if !found {
-				c.String(400, "Bad Request. Expecting request in format ?deck_id=<uuid>&count=<uint8>")
-				return
-			}
-			cards, err := domain.DrawCards(&deck, args.Count)
-			if err != nil {
-				c.String(400, "Bad Request. Failed to draw cards from the deck")
-				return
-			}
-			var dto []api.CardDTO
-			for _, card := range cards {
-				dto = append(dto, api.CreateCardDTO(card))
-			}
-			storage.Add(deck)
-			c.JSON(200, dto)
-			return
-		} else {
-			c.String(400, "Bad Request. Expecting request in format ?deck_id=<uuid>&count=<uint8>")
-			return
-		}
-	})
+	r.POST("/create-deck", api.CreateDeckHandler)
+	r.GET("/open-deck", api.OpenDeckHandler)
+	r.PUT("/draw-cards", api.DrawCardsHandler)
+	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	r.Run()
 }

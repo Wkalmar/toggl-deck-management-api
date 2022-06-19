@@ -1,0 +1,121 @@
+basePath: /
+definitions:
+  api.CardDTO:
+    properties:
+      code:
+        type: string
+      suit:
+        type: string
+      value:
+        type: string
+    type: object
+  api.ClosedDeckDTO:
+    properties:
+      deck_id:
+        type: string
+      remaining:
+        type: integer
+      shuffled:
+        type: boolean
+    type: object
+  api.OpenDeckDTO:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/api.CardDTO'
+        type: array
+      deck_id:
+        type: string
+      remaining:
+        type: integer
+      shuffled:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Deck Management API
+  version: "0.1"
+paths:
+  /create-deck:
+    post:
+      consumes:
+      - '*/*'
+      description: Creates deck that can be either shuffled or unshuffled. It can
+        accept the list of exact cards which can be shuffled or unshuffled as well.
+        In case no cards provided it returns a deck with 52 cards.
+      parameters:
+      - description: indicates whether deck is shuffled
+        in: query
+        name: shuffled
+        required: true
+        type: boolean
+      - description: array of card codes i.e. 8C,AS,7D
+        in: query
+        name: cards
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ClosedDeckDTO'
+      summary: Creates new deck.
+  /draw-cards:
+    put:
+      consumes:
+      - '*/*'
+      description: Removes given number of cards from a deck and returns them as a
+        response.
+      parameters:
+      - description: id of the deck
+        in: query
+        name: deck_id
+        required: true
+        type: string
+      - description: number of cards to draw
+        in: query
+        name: count
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.CardDTO'
+            type: array
+      summary: Draws cards from a deck.
+  /open-deck:
+    get:
+      consumes:
+      - '*/*'
+      description: Returns a deck with all of its cars revealed.
+      parameters:
+      - description: id of the deck
+        in: query
+        name: deck_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.OpenDeckDTO'
+      summary: Opens deck.
+schemes:
+- http
+swagger: "2.0"
