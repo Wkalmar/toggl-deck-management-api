@@ -74,7 +74,7 @@ func TestCreateDeck_Unshuffled(t *testing.T) {
 	}
 	for _, item := range CreateUnshuffledDeckData {
 		card := unshuffledDeck.Cards[item.index]
-		if card.Suite != item.shape || card.Value != item.rank {
+		if card.Shape != item.shape || card.Rank != item.rank {
 			t.Log("First card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
 			t.Fail()
 		}
@@ -120,7 +120,7 @@ func TestCreateDeck_Shuffled_ThenUnshuffled(t *testing.T) {
 	unshuffledDeck := CreateDeck(false)
 	for _, item := range CreateUnshuffledDeckData {
 		card := unshuffledDeck.Cards[item.index]
-		if card.Suite != item.shape || card.Value != item.rank {
+		if card.Shape != item.shape || card.Rank != item.rank {
 			t.Log("Card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
 			t.Fail()
 		}

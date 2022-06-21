@@ -7,8 +7,8 @@ import (
 
 func TestCreateCardDTO(t *testing.T) {
 	input := domain.Card{
-		Suite: domain.Clubs,
-		Value: domain.Seven,
+		Shape: domain.Clubs,
+		Rank:  domain.Seven,
 	}
 	actual := CreateCardDTO(input)
 	expected := CardDTO{

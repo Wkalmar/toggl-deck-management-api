@@ -3,8 +3,8 @@ package domain
 import "errors"
 
 type Card struct {
-	Value Rank
-	Suite Shape
+	Rank  Rank
+	Shape Shape
 }
 
 type StringRepresentation struct {
@@ -17,15 +17,15 @@ var letterToShapeMap map[string]Shape
 var rankToStringRepresentationMap map[Rank]StringRepresentation
 var letterToRankMap map[string]Rank
 
-func CreateCard(value Rank, suite Shape) Card {
+func CreateCard(rank Rank, shape Shape) Card {
 	return Card{
-		Value: value,
-		Suite: suite,
+		Rank:  rank,
+		Shape: shape,
 	}
 }
 
 func GetCardStringCode(card Card) string {
-	return rankToStringRepresentationMap[card.Value].code + shapeToStringRepresentationMap[card.Suite].code
+	return rankToStringRepresentationMap[card.Rank].code + shapeToStringRepresentationMap[card.Shape].code
 }
 
 func ParseCardStringCode(code string) (Card, error) {
