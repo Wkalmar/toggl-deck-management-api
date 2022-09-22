@@ -1,6 +1,7 @@
 package api
 
 import (
+	"strings"
 	"toggl-deck-management-api/domain"
 	"toggl-deck-management-api/storage"
 
@@ -9,8 +10,8 @@ import (
 )
 
 type CreateDeckArgs struct {
-	Shuffled bool     `form:"shuffled"`
-	Cards    []string `form:"cards"`
+	Shuffled bool   `form:"shuffled"`
+	Cards    string `form:"cards"`
 }
 
 type OpenDeckArgs struct {
@@ -35,7 +36,7 @@ func CreateDeckHandler(c *gin.Context) {
 	var args CreateDeckArgs
 	if c.ShouldBind(&args) == nil {
 		var domainCards []domain.Card
-		for _, card := range args.Cards {
+		for _, card := range strings.Split(args.Cards, ",") {
 			domainCard, err := domain.ParseCardStringCode(card)
 			if err == nil {
 				domainCards = append(domainCards, domainCard)
