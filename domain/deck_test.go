@@ -3,6 +3,8 @@ package domain
 import (
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type CreateDeckDataItem struct {
@@ -74,10 +76,8 @@ func TestCreateDeck_Unshuffled(t *testing.T) {
 	}
 	for _, item := range CreateUnshuffledDeckData {
 		card := unshuffledDeck.Cards[item.index]
-		if card.Shape != item.shape || card.Rank != item.rank {
-			t.Log("First card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
-			t.Fail()
-		}
+		assert.Equal(t, item.rank, card.Rank)
+		assert.Equal(t, item.shape, card.Shape)
 	}
 }
 
@@ -113,17 +113,12 @@ func TestCreateDeck_Shuffled(t *testing.T) {
 
 func TestCreateDeck_Shuffled_ThenUnshuffled(t *testing.T) {
 	shuffledDeck := CreateDeck(true)
-	if !shuffledDeck.Shuffled {
-		t.Log("Property shuffled of shuffled deck expected to be true")
-		t.Fail()
-	}
+	assert.True(t, shuffledDeck.Shuffled)
 	unshuffledDeck := CreateDeck(false)
 	for _, item := range CreateUnshuffledDeckData {
 		card := unshuffledDeck.Cards[item.index]
-		if card.Shape != item.shape || card.Rank != item.rank {
-			t.Log("Card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
-			t.Fail()
-		}
+		assert.Equal(t, item.rank, card.Rank)
+		assert.Equal(t, item.shape, card.Shape)
 	}
 }
 
@@ -135,10 +130,7 @@ func TestCreateDeck_ExactCardsArePassed_Unshuffled(t *testing.T) {
 	deck := CreateDeck(false, cards...)
 	for i, inputCard := range cards {
 		card := deck.Cards[i]
-		if card != inputCard {
-			t.Log("Card expected to be " + GetCardStringCode(inputCard) + " but was " + GetCardStringCode(card))
-			t.Fail()
-		}
+		assert.Equal(t, inputCard, card)
 	}
 }
 

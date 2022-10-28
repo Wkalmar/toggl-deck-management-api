@@ -37,7 +37,7 @@ func CreateDeckHandler(c *gin.Context) {
 	if c.ShouldBind(&args) == nil {
 		var domainCards []domain.Card
 		for _, card := range strings.Split(args.Cards, ",") {
-			domainCard, err := domain.ParseCardStringCode(card)
+			domainCard, err := ParseCardStringCode(card)
 			if err == nil {
 				domainCards = append(domainCards, domainCard)
 			} else {
