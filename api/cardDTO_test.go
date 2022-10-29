@@ -3,6 +3,8 @@ package api
 import (
 	"testing"
 	"toggl-deck-management-api/domain"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type CreateCardDTODataItem struct {
@@ -68,10 +70,7 @@ var CreateCardDTOData = []CreateCardDTODataItem{
 func TestCreateCardDTO(t *testing.T) {
 	for _, item := range CreateCardDTOData {
 		actual := CreateCardDTO(item.input)
-		if actual != item.actual {
-			t.Log("Incorrect value when creating CardDTO")
-			t.Fail()
-		}
+		assert.Equal(t, item.actual, actual)
 	}
 }
 
@@ -99,9 +98,6 @@ func TestParseCardStringCode(t *testing.T) {
 			t.Log("Expected to succeed for " + data.code)
 			t.Fail()
 		}
-		if actual != data.card {
-			t.Log("Expected " + GetCardStringCode(data.card) + " but was " + GetCardStringCode(actual))
-			t.Fail()
-		}
+		assert.Equal(t, data.card, actual)
 	}
 }
