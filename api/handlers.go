@@ -36,13 +36,15 @@ func CreateDeckHandler(c *gin.Context) {
 	var args CreateDeckArgs
 	if c.ShouldBind(&args) == nil {
 		var domainCards []domain.Card
-		for _, card := range strings.Split(args.Cards, ",") {
-			domainCard, err := ParseCardStringCode(card)
-			if err == nil {
-				domainCards = append(domainCards, domainCard)
-			} else {
-				c.String(400, "Invalid request. Invalid card code "+card)
-				return
+		if args.Cards != "" {
+			for _, card := range strings.Split(args.Cards, ",") {
+				domainCard, err := ParseCardStringCode(card)
+				if err == nil {
+					domainCards = append(domainCards, domainCard)
+				} else {
+					c.String(400, "Invalid request. Invalid card code "+card)
+					return
+				}
 			}
 		}
 		deck := domain.CreateDeck(args.Shuffled, domainCards...)
