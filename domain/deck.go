@@ -17,10 +17,6 @@ type Deck struct {
 var unshuffledCards []Card
 
 func CountRemainingCards(d Deck) uint8 {
-	return countRemainingCardsCore(d)
-}
-
-func countRemainingCardsCore(d Deck) uint8 {
 	return uint8(len(d.Cards))
 }
 
@@ -62,7 +58,7 @@ func CreateDeck(shuffled bool, cards ...Card) Deck {
 }
 
 func DrawCards(deck *Deck, count uint8) ([]Card, error) {
-	if count > countRemainingCardsCore(*deck) {
+	if count > CountRemainingCards(*deck) {
 		return nil, errors.New("DrawCards: Insuffucient amount of cards in deck")
 	}
 	result := deck.Cards[:count]
