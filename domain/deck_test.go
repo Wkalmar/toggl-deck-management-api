@@ -1,8 +1,9 @@
 package domain
 
 import (
-	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type CreateDeckDataItem struct {
@@ -68,25 +69,17 @@ var CreateUnshuffledDeckData = []CreateDeckDataItem{
 
 func TestCreateDeck_Unshuffled(t *testing.T) {
 	unshuffledDeck := CreateDeck(false)
-	if unshuffledDeck.Shuffled {
-		t.Log("Property shuffled of unshuffled deck expected to be false")
-		t.Fail()
-	}
+	assert.False(t, unshuffledDeck.Shuffled)
 	for _, item := range CreateUnshuffledDeckData {
 		card := unshuffledDeck.Cards[item.index]
-		if card.Shape != item.shape || card.Rank != item.rank {
-			t.Log("First card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
-			t.Fail()
-		}
+		assert.Equal(t, item.rank, card.Rank)
+		assert.Equal(t, item.shape, card.Shape)
 	}
 }
 
 func TestCreateDeck_Shuffled(t *testing.T) {
 	shuffledDeck := CreateDeck(true)
-	if !shuffledDeck.Shuffled {
-		t.Log("Property shuffled of shuffled deck expected to be true")
-		t.Fail()
-	}
+	assert.True(t, shuffledDeck.Shuffled)
 	cardCount := make(map[Card]int)
 	for _, card := range shuffledDeck.Cards {
 		value, exists := cardCount[card]
@@ -113,17 +106,12 @@ func TestCreateDeck_Shuffled(t *testing.T) {
 
 func TestCreateDeck_Shuffled_ThenUnshuffled(t *testing.T) {
 	shuffledDeck := CreateDeck(true)
-	if !shuffledDeck.Shuffled {
-		t.Log("Property shuffled of shuffled deck expected to be true")
-		t.Fail()
-	}
+	assert.True(t, shuffledDeck.Shuffled)
 	unshuffledDeck := CreateDeck(false)
 	for _, item := range CreateUnshuffledDeckData {
 		card := unshuffledDeck.Cards[item.index]
-		if card.Shape != item.shape || card.Rank != item.rank {
-			t.Log("Card expected to be " + GetCardStringCode(CreateCard(item.rank, item.shape)) + " but was " + GetCardStringCode(card))
-			t.Fail()
-		}
+		assert.Equal(t, item.rank, card.Rank)
+		assert.Equal(t, item.shape, card.Shape)
 	}
 }
 
@@ -135,10 +123,7 @@ func TestCreateDeck_ExactCardsArePassed_Unshuffled(t *testing.T) {
 	deck := CreateDeck(false, cards...)
 	for i, inputCard := range cards {
 		card := deck.Cards[i]
-		if card != inputCard {
-			t.Log("Card expected to be " + GetCardStringCode(inputCard) + " but was " + GetCardStringCode(card))
-			t.Fail()
-		}
+		assert.Equal(t, inputCard, card)
 	}
 }
 
@@ -160,59 +145,31 @@ func TestCreateDeck_ExactCardsArePassed_Shuffled(t *testing.T) {
 	}
 	for _, inputCard := range cards {
 		value, found := deckCardsCount[inputCard]
-		if !found {
-			t.Log("Expected all cards to be present")
-			t.Fail()
-		}
-		if value != 1 {
-			t.Log("Expected cards not to be duplicate")
-			t.Fail()
-		}
+		assert.True(t, found, "Expected all cards to be present")
+		assert.Equal(t, 1, value, "Expected cards not to be duplicate")
 	}
 }
 
 func TestDrawCards_SufficientAmount(t *testing.T) {
 	deck := CreateDeck(true)
 	items, err := DrawCards(&deck, 2)
-	if err != nil {
-		t.Log("Expected to succeed")
-		t.Fail()
-	}
-	if len(items) != 2 {
-		t.Log("Expected to return 2 items but was " + strconv.Itoa((len(items))))
-		t.Fail()
-	}
-	reamining := countRemainingCardsCore(deck)
-	if reamining != 50 {
-		t.Log("Excpected 50 items to remain but was " + strconv.Itoa(int(reamining)))
-		t.Fail()
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, 2, len(items))
+	remaining := CountRemainingCards(deck)
+	assert.Equal(t, uint8(50), remaining)
 }
 
 func TestDrawCards_SufficientAmount_NoItemsRemain(t *testing.T) {
 	deck := CreateDeck(true)
 	items, err := DrawCards(&deck, 52)
-	if err != nil {
-		t.Log("Expected to succeed")
-		t.Fail()
-	}
-	if len(items) != 52 {
-		t.Log("Expected to return 2 items but was " + strconv.Itoa((len(items))))
-		t.Fail()
-	}
-	reamining := countRemainingCardsCore(deck)
-	if reamining != 0 {
-		t.Log("Excpected 50 items to remain but was " + strconv.Itoa(int(reamining)))
-		t.Fail()
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, 52, len(items))
+	reamining := CountRemainingCards(deck)
+	assert.Equal(t, uint8(0), reamining)
 }
 
 func TestDrawCards_InsufficientAmount(t *testing.T) {
 	deck := CreateDeck(true)
 	_, err := DrawCards(&deck, 53)
-	if err == nil {
-		t.Log("Expected to fail")
-		t.Fail()
-	}
-
+	assert.NotNil(t, err)
 }

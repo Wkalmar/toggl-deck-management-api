@@ -1,6 +1,9 @@
 package api
 
-import "toggl-deck-management-api/domain"
+import (
+	"errors"
+	"toggl-deck-management-api/domain"
+)
 
 type CardDTO struct {
 	Rank  string `json:"value"`
@@ -8,10 +11,46 @@ type CardDTO struct {
 	Code  string `json:"code"`
 }
 
-func CreateCardDTO(card domain.Card) CardDTO {
+type StringRepresentation struct {
+	code     string
+	fullname string
+}
+
+func createCardDTO(card domain.Card) CardDTO {
 	return CardDTO{
-		Rank:  domain.GetRankFullname(card.Rank),
-		Shape: domain.GetShapeFullname(card.Shape),
-		Code:  domain.GetCardStringCode(card),
+		Rank:  GetRankFullname(card.Rank),
+		Shape: GetShapeFullname(card.Shape),
+		Code:  GetCardStringCode(card),
 	}
+}
+
+var shapeToStringRepresentationMap map[domain.Shape]StringRepresentation
+var letterToShapeMap map[string]domain.Shape
+var rankToStringRepresentationMap map[domain.Rank]StringRepresentation
+var letterToRankMap map[string]domain.Rank
+
+func GetCardStringCode(card domain.Card) string {
+	return rankToStringRepresentationMap[card.Rank].code + shapeToStringRepresentationMap[card.Shape].code
+}
+
+func parseCardStringCode(code string) (domain.Card, error) {
+	if len(code) < 2 || len(code) > 3 {
+		return domain.Card{}, errors.New("ParseCardStringCode. Invalid card code")
+	}
+	rankCode := code[:len(code)-1]
+	shapeCode := code[len(code)-1:]
+	rank, rankFound := letterToRankMap[rankCode]
+	shape, shapeFound := letterToShapeMap[shapeCode]
+	if !rankFound || !shapeFound {
+		return domain.Card{}, errors.New("ParseCardStringCode. Invalid card code")
+	}
+	return domain.CreateCard(rank, shape), nil
+}
+
+func GetShapeFullname(shape domain.Shape) string {
+	return shapeToStringRepresentationMap[shape].fullname
+}
+
+func GetRankFullname(rank domain.Rank) string {
+	return rankToStringRepresentationMap[rank].fullname
 }

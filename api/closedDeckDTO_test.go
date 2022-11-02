@@ -3,6 +3,8 @@ package api
 import (
 	"testing"
 	"toggl-deck-management-api/domain"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type TestCreateClosedDeckDTODataItem struct {
@@ -20,11 +22,8 @@ var TestCreateClosedDeckDTOData = []TestCreateClosedDeckDTODataItem{
 func TestCreateClosedDeckDTO(t *testing.T) {
 	for _, item := range TestCreateClosedDeckDTOData {
 		deck := domain.CreateDeck(item.shuffled, item.cards...)
-		dto := CreateClosedDeckDTO(deck)
-		if dto.Shuffled != item.shuffled {
-			t.Log("Expect shuffled proerty to be ")
-			t.Fail()
-		}
+		dto := createClosedDeckDTO(deck)
+		assert.Equal(t, item.shuffled, dto.Shuffled)
 	}
 
 }

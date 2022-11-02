@@ -12,7 +12,7 @@ type ClosedDeckDTO struct {
 	Remaining uint8     `json:"remaining"`
 }
 
-func CreateClosedDeckDTO(deck domain.Deck) ClosedDeckDTO {
+func createClosedDeckDTO(deck domain.Deck) ClosedDeckDTO {
 	return ClosedDeckDTO{
 		DeckId:    deck.DeckId,
 		Shuffled:  deck.Shuffled,
