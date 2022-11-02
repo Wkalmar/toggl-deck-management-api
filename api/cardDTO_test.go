@@ -69,7 +69,7 @@ var CreateCardDTOData = []CreateCardDTODataItem{
 
 func TestCreateCardDTO(t *testing.T) {
 	for _, item := range CreateCardDTOData {
-		actual := CreateCardDTO(item.input)
+		actual := createCardDTO(item.input)
 		assert.Equal(t, item.actual, actual)
 	}
 }
@@ -90,7 +90,7 @@ var TestParseCardStringCodeData = []TestParseCardStringCodeDataItem{
 
 func TestParseCardStringCode(t *testing.T) {
 	for _, data := range TestParseCardStringCodeData {
-		actual, err := ParseCardStringCode(data.code)
+		actual, err := parseCardStringCode(data.code)
 		if data.isError && err == nil {
 			t.Log("Expected to fail for " + data.code)
 			t.Fail()

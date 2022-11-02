@@ -16,7 +16,7 @@ type StringRepresentation struct {
 	fullname string
 }
 
-func CreateCardDTO(card domain.Card) CardDTO {
+func createCardDTO(card domain.Card) CardDTO {
 	return CardDTO{
 		Rank:  GetRankFullname(card.Rank),
 		Shape: GetShapeFullname(card.Shape),
@@ -33,7 +33,7 @@ func GetCardStringCode(card domain.Card) string {
 	return rankToStringRepresentationMap[card.Rank].code + shapeToStringRepresentationMap[card.Shape].code
 }
 
-func ParseCardStringCode(code string) (domain.Card, error) {
+func parseCardStringCode(code string) (domain.Card, error) {
 	if len(code) < 2 || len(code) > 3 {
 		return domain.Card{}, errors.New("ParseCardStringCode. Invalid card code")
 	}

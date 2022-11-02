@@ -22,7 +22,7 @@ var TestCreateClosedDeckDTOData = []TestCreateClosedDeckDTODataItem{
 func TestCreateClosedDeckDTO(t *testing.T) {
 	for _, item := range TestCreateClosedDeckDTOData {
 		deck := domain.CreateDeck(item.shuffled, item.cards...)
-		dto := CreateClosedDeckDTO(deck)
+		dto := createClosedDeckDTO(deck)
 		assert.Equal(t, item.shuffled, dto.Shuffled)
 	}
 

@@ -13,10 +13,10 @@ type OpenDeckDTO struct {
 	Cards     []CardDTO `json:"cards"`
 }
 
-func CreateOpenDeckDTO(deck domain.Deck) OpenDeckDTO {
+func createOpenDeckDTO(deck domain.Deck) OpenDeckDTO {
 	var cards []CardDTO
 	for _, domainCard := range deck.Cards {
-		cards = append(cards, CreateCardDTO(domainCard))
+		cards = append(cards, createCardDTO(domainCard))
 	}
 	return OpenDeckDTO{
 		DeckId:    deck.DeckId,

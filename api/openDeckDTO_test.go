@@ -9,7 +9,7 @@ import (
 
 func TestCreateOpenDeckDTO(t *testing.T) {
 	deck := domain.CreateDeck(false, domain.CreateCard(domain.Ace, domain.Clubs), domain.CreateCard(domain.Four, domain.Clubs))
-	actual := CreateOpenDeckDTO(deck)
+	actual := createOpenDeckDTO(deck)
 	assert.Equal(t, uint8(2), actual.Remaining)
 	assert.False(t, actual.Shuffled)
 	expectedCard0 := CardDTO{

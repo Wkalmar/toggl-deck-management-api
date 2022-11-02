@@ -38,7 +38,7 @@ func CreateDeckHandler(c *gin.Context) {
 		var domainCards []domain.Card
 		if args.Cards != "" {
 			for _, card := range strings.Split(args.Cards, ",") {
-				domainCard, err := ParseCardStringCode(card)
+				domainCard, err := parseCardStringCode(card)
 				if err == nil {
 					domainCards = append(domainCards, domainCard)
 				} else {
@@ -49,7 +49,7 @@ func CreateDeckHandler(c *gin.Context) {
 		}
 		deck := domain.CreateDeck(args.Shuffled, domainCards...)
 		storage.Add(deck)
-		dto := CreateClosedDeckDTO(deck)
+		dto := createClosedDeckDTO(deck)
 		c.JSON(200, dto)
 		return
 	} else {
@@ -79,7 +79,7 @@ func OpenDeckHandler(c *gin.Context) {
 			c.String(400, "Bad Request. Deck with given id not found")
 			return
 		}
-		dto := CreateOpenDeckDTO(deck)
+		dto := createOpenDeckDTO(deck)
 		c.JSON(200, dto)
 		return
 	} else {
@@ -117,7 +117,7 @@ func DrawCardsHandler(c *gin.Context) {
 		}
 		var dto []CardDTO
 		for _, card := range cards {
-			dto = append(dto, CreateCardDTO(card))
+			dto = append(dto, createCardDTO(card))
 		}
 		storage.Add(deck)
 		c.JSON(200, dto)
