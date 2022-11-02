@@ -29,7 +29,7 @@ func main() {
 	r.POST("/create-deck", api.CreateDeckHandler)
 	r.GET("/open-deck", api.OpenDeckHandler)
 	r.PUT("/draw-cards", api.DrawCardsHandler)
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+	url := ginSwagger.URL("/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	r.Run()
 }
