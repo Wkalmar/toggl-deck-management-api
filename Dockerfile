@@ -1,4 +1,4 @@
-FROM golang:1.18-bullseye
+FROM golang:1.20-bullseye
 RUN mkdir /app
 COPY . /app
 WORKDIR /app

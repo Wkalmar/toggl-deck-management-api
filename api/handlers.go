@@ -79,7 +79,7 @@ func OpenDeckHandler(c *gin.Context) {
 			c.String(400, "Bad Request. Deck with given id not found")
 			return
 		}
-		dto := createOpenDeckDTO(deck)
+		dto := createOpenDeckDTO(*deck)
 		c.JSON(200, dto)
 		return
 	} else {
@@ -107,10 +107,10 @@ func DrawCardsHandler(c *gin.Context) {
 		}
 		deck, found := storage.Get(deckId)
 		if !found {
-			c.String(400, "Bad Request. Expecting request in format ?deck_id=<uuid>&count=<uint8>")
+			c.String(400, "Bad Request. Failed to find deck by given id. Expecting request in format ?deck_id=<uuid>&count=<uint8>")
 			return
 		}
-		cards, err := domain.DrawCards(&deck, args.Count)
+		cards, err := domain.DrawCards(deck, args.Count)
 		if err != nil {
 			c.String(400, "Bad Request. Failed to draw cards from the deck")
 			return
@@ -119,7 +119,7 @@ func DrawCardsHandler(c *gin.Context) {
 		for _, card := range cards {
 			dto = append(dto, createCardDTO(card))
 		}
-		storage.Add(deck)
+		storage.Add(*deck)
 		c.JSON(200, dto)
 		return
 	} else {

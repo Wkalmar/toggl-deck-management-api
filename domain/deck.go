@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 type Deck struct {
@@ -43,25 +44,37 @@ func initCards() []Card {
 }
 
 func CreateDeck(shuffled bool, cards ...Card) Deck {
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+	sugar := logger.Sugar()
+	sugar.Infow("Create deck.", "shuffled", shuffled, "cards", cards)
 	if len(cards) == 0 {
 		cards = initCards()
 	}
 	if shuffled {
 		shuffleCards(cards)
 	}
-
-	return Deck{
+	result := Deck{
 		DeckId:   uuid.New(),
 		Shuffled: shuffled,
 		Cards:    cards,
 	}
+	sugar.Infow("Create deck completed", "deck", result)
+	return result
 }
 
 func DrawCards(deck *Deck, count uint8) ([]Card, error) {
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+	sugar := logger.Sugar()
+	sugar.Infow("Draw cards.", "deck", deck, "count", count)
 	if count > CountRemainingCards(*deck) {
-		return nil, errors.New("DrawCards: Insuffucient amount of cards in deck")
+		err := errors.New("insuffucient amount of cards in deck")
+		sugar.Errorw("Draw cards completed.", "err", err, "deck", deck)
+		return nil, err
 	}
 	result := deck.Cards[:count]
 	deck.Cards = deck.Cards[count:]
+	sugar.Infow("Draw cards completed.", "result", result, "deck", deck)
 	return result, nil
 }
