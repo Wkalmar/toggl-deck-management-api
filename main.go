@@ -25,7 +25,10 @@ import (
 // @BasePath /
 // @schemes http
 func main() {
-	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
+	r.Use(api.StructuredLogger())
+	r.Use(gin.Recovery())
 	r.POST("/create-deck", api.CreateDeckHandler)
 	r.GET("/open-deck", api.OpenDeckHandler)
 	r.PUT("/draw-cards", api.DrawCardsHandler)
